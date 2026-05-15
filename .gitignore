@@ -39,3 +39,5 @@ Desktop.ini
 .idea/
 *.sw?
 *.local
+
+.vercel

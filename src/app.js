@@ -4,6 +4,7 @@ let projectRoutes = require("./routes/project.routes")
 const cookieParser = require("cookie-parser");
 const blogRoutes = require("./routes/blog.routes");
 const cors = require("cors");
+const connectDB = require("./config/db");
 
 
 
@@ -22,6 +23,16 @@ app.use(
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({
+      message: "Database connection failed",
+    });
+  }
+});
 
 app.use("/api/auth", authRoutes)
 app.use("/api/projects", projectRoutes)
