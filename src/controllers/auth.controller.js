@@ -3,6 +3,13 @@ let bcrypt = require("bcrypt");
 
 const userModel = require("../models/user.model");
 
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 24 * 60 * 60 * 1000,
+});
+
 let registerController = async (req, res) => {
   try {
     let { name, email, password } = req.body;
@@ -34,7 +41,7 @@ let registerController = async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token);
+    res.cookie("token", token, getCookieOptions());
 
     return res.status(201).json({
       message: "User Created sucessfully",
@@ -73,7 +80,7 @@ let loginController = async (req, res) => {
       expiresIn: "1d",
     });
 
-     res.cookie("token", token);
+     res.cookie("token", token, getCookieOptions());
 
     return res.status(200).json({
       message: "User Loggedin sucessfully",
